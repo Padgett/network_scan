@@ -1,0 +1,3 @@
+REST API to add/update/delete and display information from network scans.
+
+Uses the Slim framework (http://www.slimframework.com) and fredriklindberg's UUID class. (https://github.com/fredriklindberg/class.uuid.php)
