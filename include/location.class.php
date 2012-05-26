@@ -33,11 +33,9 @@ class Location {
     $this->client_name = $client_name;
     $this->location_name = $location_name;
     if (!empty($this->client_name) || !empty($this->location_name)) {
-      //First we'll generate the UUIDs
-      $this->client_uuid  = UUID::generate(UUID::UUID_NAME_SHA1, UUID::FMT_STRING,
-        $this->client_name);
-      $this->location_uuid = $sha1  = UUID::generate(UUID::UUID_NAME_SHA1, UUID::FMT_STRING,
-        $this->location_name, $this->client_uuid);
+      //First we'll generate the UUIDs      
+      $this->generate_client_uuid();
+      $this->generate_location_uuid();
       
       //Check for matching UUIDs in the db
       $client_sql = "SELECT * FROM clients WHERE uuid = :client_uuid";
@@ -112,12 +110,14 @@ class Location {
   
   //Generate Location UUID
   private function generate_location_uuid() {
-    
+    $this->location_uuid = $sha1  = UUID::generate(UUID::UUID_NAME_SHA1, UUID::FMT_STRING,
+        $this->location_name, $this->client_uuid);
   }
   
   //Generate Client UUID
   private function generate_client_uuid() {
-    
+    $this->client_uuid  = UUID::generate(UUID::UUID_NAME_SHA1, UUID::FMT_STRING,
+        $this->client_name);
   }
   
   //Validate Location UUID
