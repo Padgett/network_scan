@@ -1,12 +1,15 @@
 <?php
 /*** ROUTING DEFINES ***/
 $api->get('/', 'home');
-$api->get('/location/register/:client_name/:location_name', 'register');
 $api->get('/location/register/', 'home');
-$api->delete('/location/:uuid', 'check_login', 'location_delete');
-$api->post('/system', 'check_login', 'system_add');
-$api->put('/system/:uuid', 'check_login', 'system_update');
-$api->delete('/system/:uuid', 'check_login', 'system_delete');
+$api->get('/location/register/:client_name/:location_name', 'register');
+$api->post('/system', 'check_login', 'system_post');
+/*
+ * For future implementation:
+ * $api->delete('/location/:uuid', 'check_login', 'location_delete');
+ * $api->put('/system/:uuid', 'check_login', 'system_update');
+ * $api->delete('/system/:uuid', 'check_login', 'system_delete');
+ */
 /*** END ***/
 
 /*** ROUTING FUNCTIONS ***/
@@ -30,6 +33,9 @@ function register($client_name,$location_name) {
 }
 
 function check_login() {
+  $requestObj = Slim::getInstance()->request();
+  $body = $requestObj->getBody();
+  $request = json_decode($body);
   $sess = new Session(getConnection(),$api);
   try {
     return $sess->is_logged_in();
@@ -57,7 +63,7 @@ function system_add() {
   
 }
 
-function system_update($uuid) {
+function system_update() {
   
 }
 
