@@ -25,10 +25,23 @@ function register($client_name,$location_name) {
   } else {
     try {
       $new_info = $loc->register($client_name,$location_name);
-      echo '{"info": '.json_encode($new_info).'}';
+      echo '{"registered": '.json_encode($new_info).'}';
     } catch (Exception $e) {
       echo '{"error":{"text":'.$e->getMessage().'}}';
     }
+  }
+}
+
+function system_post() {
+  $requestObj = Slim::getInstance()->request();
+  $body = $requestObj->getBody();
+  $request = json_decode($body);
+  $sys = new System(getConnection(),$api);
+  try {
+    $return = $sys->post($request);
+    echo '{"success":{'.json_encode($return).'}}';
+  } catch (Exception $e) {
+    echo '{"error":{"text":'.$e->getMessage().'}}';
   }
 }
 
@@ -36,11 +49,15 @@ function check_login() {
   $requestObj = Slim::getInstance()->request();
   $body = $requestObj->getBody();
   $request = json_decode($body);
-  $sess = new Session(getConnection(),$api);
+  $loc = new Location(getConnection(), $api);
   try {
-    return $sess->is_logged_in();
+    $loc->check_login($request);
   } catch (PDOException $e) {
-    echo '{"error":{"text":'.$e->getMessage().'}}';
+    //echo '{"error":{"text":'.$e->getMessage().'}}';
+    //return false;
+    $api->halt(500, '{"error":{"text":'.$e->getMessage().'}}');
+  } catch (Exception $e) {
+    $api->halt(403, '{"error":{"text":'.$e->getMessage().'}}');
   }
 }
 

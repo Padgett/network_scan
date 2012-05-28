@@ -108,6 +108,10 @@ class Location {
     }
   }
   
+  public function check_login($request) {
+    
+  }
+  
   //Generate Location UUID
   private function generate_location_uuid() {
     $this->location_uuid = $sha1  = UUID::generate(UUID::UUID_NAME_SHA1, UUID::FMT_STRING,
