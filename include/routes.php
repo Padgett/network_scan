@@ -3,7 +3,7 @@
 $api->get('/', 'home');
 $api->get('/location/register/', 'home');
 $api->get('/location/register/:client_name/:location_name', 'register');
-$api->post('/system', 'check_login', 'system_post');
+$api->post('/system', 'check_registration', 'system_post');
 /*
  * For future implementation:
  * $api->delete('/location/:uuid', 'check_login', 'location_delete');
@@ -25,7 +25,25 @@ function register($client_name,$location_name) {
   } else {
     try {
       $new_info = $loc->register($client_name,$location_name);
+      $_SESSION['location'] = $new_info;
       echo '{"registered": '.json_encode($new_info).'}';
+    } catch (Exception $e) {
+      echo '{"error":{"text":'.$e->getMessage().'}}';
+    }
+  }
+}
+
+function check_registration() {
+  $requestObj = Slim::getInstance()->request();
+  $body = $requestObj->getBody();
+  $request = json_decode($body);
+  $loc = new Location(getConnection(), $api);
+  if (empty($request->client_name) || empty($request->location_name)) {
+    echo '{"error":{"text":client_name and location_name are required.}}';
+  } else {
+    try {
+      $new_info = $loc->register($request->client_name,$request->location_name);
+      $_SESSION['location'] = $new_info;
     } catch (Exception $e) {
       echo '{"error":{"text":'.$e->getMessage().'}}';
     }
@@ -36,7 +54,8 @@ function system_post() {
   $requestObj = Slim::getInstance()->request();
   $body = $requestObj->getBody();
   $request = json_decode($body);
-  $sys = new System(getConnection(),$api);
+  $loc = new Location(getConnection(),$api,$_SESSION['location']);
+  $sys = new System(getConnection(),$api,$loc);
   try {
     $return = $sys->post($request);
     echo '{"success":{'.json_encode($return).'}}';

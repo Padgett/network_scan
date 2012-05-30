@@ -28,6 +28,14 @@ class Location {
       $this->location_uuid = $info['location_uuid'];
   }
 
+  public function get_location_id() {
+    return $this->location_id;
+  }
+  
+  public function get_client_id() {
+    return $this->client_id;
+  }
+  
   //Registers a new client location or returns UUIDs if already exists
   public function register($client_name,$location_name) {
     $this->client_name = $client_name;
@@ -102,9 +110,10 @@ class Location {
       
       //Return info array
       return array('client_name' => $this->client_name, 'client_uuid' => $this->client_uuid, 
+        'client_id' => $this->client_id, 'location_id' => $this->location_id,
         'location_name' => $this->location_name, 'location_uuid' => $this->location_uuid);
     } else {
-      throw new Exception('Registration requires client_name and location_name. 1');
+      throw new Exception('Registration requires client_name and location_name.');
     }
   }
   
