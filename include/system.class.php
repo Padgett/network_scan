@@ -44,11 +44,9 @@ class System {
       $stmt = null;
       
       //Return our full object
-      $sql = "SELECT *, :ip AS ip FORM systems WHERE id = :system_id";
-      $stmt = $this->db->prepare($sql);
-      $stmt->bindParam("system_id", $this->id);
-      $stmt->bindParam("ip", $request->ip);
-      return $request;
+      $system = array('hostname' => $request->hostname, 'macaddress' => $request->macaddress, 
+        'macvendor' => $request->macvendor, 'ip' => $request->ip);
+      return array_merge($_SESSION['location'],$system);
     } catch(PDOException $e) {
       throw new Exception('Could not add client. Database Error. '.$e->getMessage(), null, $e);
     } catch (Exception $e) {

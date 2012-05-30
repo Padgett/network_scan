@@ -58,7 +58,7 @@ function system_post() {
   $sys = new System(getConnection(),$api,$loc);
   try {
     $return = $sys->post($request);
-    echo '{"success":{'.json_encode($return).'}}';
+    echo '{"success":'.json_encode($return).'}';
   } catch (Exception $e) {
     echo '{"error":{"text":'.$e->getMessage().'}}';
   }
